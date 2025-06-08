@@ -6,8 +6,21 @@ LOG_FILE="setup_test.log"
 # Create or clear the log file
 echo "Starting setup and test at $(date)" > $LOG_FILE
 
-# 1. Check if required environment variables are set
+# 1. Load environment variables from .env file if present
+if [ -f .env ]; then
+  echo "Loading environment variables from .env file..." >> $LOG_FILE
+  export $(grep -v '^#' .env | xargs) >> $LOG_FILE
+else
+  echo "No .env file found, skipping environment variable load." >> $LOG_FILE
+fi
+
+# 2. Check if required environment variables are set
 echo "Checking environment variables..." >> $LOG_FILE
+
+echo "GITHUB_ACCOUNT=$GITHUB_ACCOUNT" >> $LOG_FILE
+echo "GITHUB_REPO_NAME=$GITHUB_REPO_NAME" >> $LOG_FILE
+echo "GITHUB_PAT_KEY=$GITHUB_PAT_KEY" >> $LOG_FILE
+echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> $LOG_FILE
 
 if [ -z "$GITHUB_ACCOUNT" ]; then
   echo "Error: GITHUB_ACCOUNT is not set. Please define it in the environment." | tee -a $LOG_FILE
@@ -24,13 +37,25 @@ if [ -z "$GITHUB_PAT_KEY" ]; then
   exit 1
 fi
 
+if [ -z "$OPENAI_API_KEY" ]; then
+  echo "Error: OPENAI_API_KEY is not set. Please define it in the environment." | tee -a $LOG_FILE
+  exit 1
+fi
+
 echo "Environment variables are set." >> $LOG_FILE
 
-# 2. Configure Git remote using the provided credentials
+# 3. Check for unstaged changes
+if ! git diff-index --quiet HEAD --; then
+  echo "Error: There are unstaged changes. Please commit or stash them before proceeding." | tee -a $LOG_FILE
+  exit 1
+fi
+
+# 4. Configure Git remote using the provided credentials
 echo "Configuring Git remote..." >> $LOG_FILE
 REMOTE_URL="https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPO_NAME}.git"
 
 if [ -n "$GITHUB_PAT_KEY" ]; then
+  # Use the PAT directly in the URL for authentication
   REMOTE_URL="https://${GITHUB_ACCOUNT}:${GITHUB_PAT_KEY}@github.com/${GITHUB_ACCOUNT}/${GITHUB_REPO_NAME}.git"
   echo "Using provided GITHUB_PAT_KEY for remote authentication." >> $LOG_FILE
 else
@@ -38,6 +63,7 @@ else
 fi
 
 # Set the Git remote URL
+echo "Using remote URL: $REMOTE_URL" >> $LOG_FILE
 if git remote | grep -q '^origin$'; then
   echo "Updating Git remote URL..." >> $LOG_FILE
   git remote set-url origin "$REMOTE_URL"
@@ -46,7 +72,7 @@ else
   git remote add origin "$REMOTE_URL"
 fi
 
-# 3. Compare the PAT in the remote URL with the provided environment variable
+# 5. Compare the PAT in the remote URL with the provided environment variable
 echo "Comparing remote token with GITHUB_PAT_KEY..." >> $LOG_FILE
 remote_token="$(git remote get-url origin | sed -E 's|https://[^:]+:([^@]+)@.*|\1|')"
 if [ -n "$remote_token" ] && [ -n "$GITHUB_PAT_KEY" ]; then
@@ -57,7 +83,7 @@ if [ -n "$remote_token" ] && [ -n "$GITHUB_PAT_KEY" ]; then
   fi
 fi
 
-# 4. Attempt to push changes to GitHub
+# 6. Attempt to push changes to GitHub
 echo "Attempting to push changes to GitHub..." >> $LOG_FILE
 
 # Try to push the changes
@@ -70,7 +96,7 @@ git push origin main || {
 # Log the successful push
 echo "Push successful to GitHub at $(date)" >> $LOG_FILE
 
-# 5. Final verification of the setup and environment
+# 7. Final verification of the setup and environment
 echo "Verifying environment setup..." >> $LOG_FILE
 echo "Git remote URL:" >> $LOG_FILE
 git remote -v >> $LOG_FILE
