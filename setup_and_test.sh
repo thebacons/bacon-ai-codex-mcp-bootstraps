@@ -44,18 +44,7 @@ fi
 
 echo "Environment variables are set." >> $LOG_FILE
 
-# 3. Ensure the working directory is clean before proceeding
-echo "Ensuring working directory is clean..." >> $LOG_FILE
-git clean -fdx >> $LOG_FILE
-git reset --hard HEAD >> $LOG_FILE
-
-# Check for unstaged changes after cleaning and resetting
-if ! git diff-index --quiet HEAD --; then
-  echo "Error: There are unstaged changes. Please commit or stash them before proceeding." | tee -a $LOG_FILE
-  exit 1
-fi
-
-# 4. Clear any existing Git credentials and set the correct remote URL
+# 3. Clear any existing Git credentials and set the correct remote URL
 echo "Clearing existing Git credentials..." >> $LOG_FILE
 git credential-cache exit
 
@@ -80,7 +69,7 @@ else
   git remote add origin "$REMOTE_URL"
 fi
 
-# 5. Attempt to push changes to GitHub
+# 4. Attempt to push changes to GitHub
 echo "Attempting to push changes to GitHub..." >> $LOG_FILE
 
 # Try to push the changes
@@ -93,7 +82,7 @@ git push origin main || {
 # Log the successful push
 echo "Push successful to GitHub at $(date)" >> $LOG_FILE
 
-# 6. Final verification of the setup and environment
+# 5. Final verification of the setup and environment
 echo "Verifying environment setup..." >> $LOG_FILE
 echo "Git remote URL:" >> $LOG_FILE
 git remote -v >> $LOG_FILE
