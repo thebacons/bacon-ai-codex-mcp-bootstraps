@@ -11,8 +11,14 @@ if [ -z "$GITHUB_REPO_NAME" ]; then
     exit 1
 fi
 
+
 if [ -z "$GITHUB_PAT_KEY" ]; then
     echo "Error: GITHUB_PAT_KEY is not set. Please define it in the environment."
+    exit 1
+fi
+
+if [ -z "$OPENAI_API_KEY" ]; then
+    echo "Error: OPENAI_API_KEY is not set. Please define it in the environment."
     exit 1
 fi
 

@@ -32,8 +32,11 @@ In your [Codex environment setup](https://chatgpt.com/codex/settings/environment
 | `GITHUB_REPO_NAME`   | The name of the GitHub repo, e.g. `my-new-project` |
 | `GITHUB_ACCOUNT`     | Your GitHub username (e.g. `thebacons`)            |
 | `GITHUB_PAT_KEY`     | Your GitHub **Personal Access Token**              |
+| `OPENAI_API_KEY`    | OpenAI API key used by the DocGen agent            |
+| `GEMINI_API_KEY`    | Gemini API key (optional)                           |
 
-> 💡 These variables allow one single Codex environment to bootstrap _any_ repo without rebuilding new containers.
+
+> 💡 These variables allow one single Codex environment to bootstrap _any_ repo without rebuilding new containers. In production, store them in the Codex environment panel under **Secrets** so they aren't committed to the repository.
 
  
 
