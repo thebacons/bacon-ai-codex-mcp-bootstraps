@@ -3,6 +3,15 @@ set -e
 
 LOG_FILE="setup_test.log"
 
+# Ensure a clean working directory before running the script
+echo "Ensuring working directory is clean..." >> $LOG_FILE
+
+# Stash any changes (including untracked files)
+echo "Stashing all changes before setup..." >> $LOG_FILE
+git add -A
+git commit -m "Saving changes before setup" || echo "No changes to commit, moving forward..." >> $LOG_FILE
+git stash push -m "Stashing all changes before setup" --include-untracked
+
 # Create or clear the log file
 echo "Starting setup and test at $(date)" > $LOG_FILE
 
@@ -103,8 +112,8 @@ git remote -v >> $LOG_FILE
 
 echo "Environment setup and Git push process completed successfully." >> $LOG_FILE
 
-# 8. Final cleanup: Reset environment to avoid leaving secrets exposed
-unset GITHUB_PAT_KEY
+# Restore the stashed changes (if any)
+git stash pop || echo "No stashed changes to restore."
 
 # Return the log file path for easy sharing
-echo "Log file generated at $(pwd)/$LOG_FILE" 
+echo "Log file generated at $(pwd)/$LOG_FILE"
