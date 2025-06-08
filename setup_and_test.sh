@@ -44,6 +44,7 @@ fi
 
 echo "Environment variables are set." >> $LOG_FILE
 
+
 # 3. Clear any existing Git credentials and set the correct remote URL
 echo "Clearing existing Git credentials..." >> $LOG_FILE
 git credential-cache exit
