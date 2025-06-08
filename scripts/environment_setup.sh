@@ -19,4 +19,14 @@ else
   git remote add origin "$REMOTE_URL"
 fi
 
+# Compare the PAT in the remote URL with the provided environment variable
+remote_token="$(git remote get-url origin | sed -E 's|https://[^:]+:([^@]+)@.*|\1|')"
+if [ -n "$remote_token" ] && [ -n "$GITHUB_PAT_KEY" ]; then
+  if [ "$remote_token" = "$GITHUB_PAT_KEY" ]; then
+    echo "PAT in remote matches provided token."
+  else
+    echo "Warning: PAT in remote does not match provided token."
+  fi
+fi
+
 echo "Environment setup complete."
