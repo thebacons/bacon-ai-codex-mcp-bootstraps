@@ -35,7 +35,7 @@ If any of these variables are missing, the script will fail with a clear error m
    * **FastAPI** must be installed to run the server.
    * **OpenAI** Python SDK is required to interact with the OpenAI API for generating documentation.
    * **GitHub CLI** (`gh`) must be installed on the system to interact with GitHub and fetch repository variables.
-   * This should have already been run in the environment's startup script, but if not,  Install dependencies by running:
+   * This should have already been run in the environment's startup script, but if not,  install dependencies by running:
 
      ```bash
      pip install -r requirements.txt
@@ -57,7 +57,7 @@ If any of these variables are missing, the script will fail with a clear error m
 You can set up the environment in one of the following ways:
 
 1. **Using a `.env` File**:
-   Ensure that the `.env` file exists in the root of the project and contains the following variables. this may cause issues is this is being pulled from GitHub as these need to be isntalled in the repositories secrets are rather than in the .env file. However Codex may want to create a temporary one locally as follows.:
+   Ensure that the `.env` file exists in the project's root directory and contains the following variables. This approach may cause some issues if .env  is being pulled from GitHub,  as these need to be added in the repository's /setup/variables & secrets section rather than exposing them  in the .env file on GitHub. However,  Codex may need to create a temporary .enf file locally as follows.:
 
    ```bash
    GITHUB_ACCOUNT=your_github_account
