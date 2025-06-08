@@ -55,7 +55,10 @@ if ! git diff-index --quiet HEAD --; then
   exit 1
 fi
 
-# 4. Configure Git remote using the provided credentials
+# 4. Clear any existing Git credentials and set the correct remote URL
+echo "Clearing existing Git credentials..." >> $LOG_FILE
+git credential-cache exit
+
 echo "Configuring Git remote..." >> $LOG_FILE
 REMOTE_URL="https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPO_NAME}.git"
 
