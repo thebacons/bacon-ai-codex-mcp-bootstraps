@@ -7,19 +7,24 @@ import openai
 import ast
 import textwrap
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 app = FastAPI(title="MCP DocGen Agent")
-
 
 class CodePayload(BaseModel):
     code: str
     filepath: Optional[str] = None
 
-
 @app.post("/generate-doc")
 async def generate_docs(payload: CodePayload):
     """Parse code, generate docstrings and markdown documentation."""
     api_key = os.getenv("OPENAI_API_KEY")
+
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Missing OPENAI_API_KEY in environment.")
 
     try:
         tree = ast.parse(payload.code)
@@ -36,26 +41,25 @@ async def generate_docs(payload: CodePayload):
                 f"Write a concise docstring for the following Python {type(node).__name__}:\n\n{source}"
             )
 
-            if api_key:
-                try:
-                    openai.api_key = api_key
-                    completion = openai.ChatCompletion.create(
-                        model="gpt-4",
-                        messages=[{"role": "user", "content": doc_prompt}],
-                        temperature=0.2,
-                        max_tokens=150,
-                    )
-                    doc = completion.choices[0].message["content"].strip()
-                except Exception as exc:
-                    raise HTTPException(status_code=500, detail=str(exc))
-            else:
-                doc = f"Documentation placeholder for {node.name}."
+            try:
+                client = openai.OpenAI(api_key=api_key)
+                completion = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[{"role": "user", "content": doc_prompt}],
+                    temperature=0.2,
+                    max_tokens=150,
+                )
+                doc = completion.choices[0].message.content.strip()
+            except Exception as exc:
+                raise HTTPException(status_code=500, detail=str(exc))
+        else:
+            doc = f"Documentation placeholder for {node.name}."
 
-            docstrings[node.name] = doc
-            markdown_parts.append(f"### {node.name}\n\n{doc}\n")
+        docstrings[node.name] = doc
+        markdown_parts.append(f"### {node.name}\n\n{doc}\n")
 
-            if ast.get_docstring(node) is None:
-                node.body.insert(0, ast.Expr(value=ast.Constant(textwrap.dedent(doc))))
+        if ast.get_docstring(node) is None:
+            node.body.insert(0, ast.Expr(value=ast.Constant(textwrap.dedent(doc))))
 
     markdown = "\n".join(markdown_parts)
     docs_dir = Path("docs")
@@ -70,11 +74,9 @@ async def generate_docs(payload: CodePayload):
 
     return {"docstrings": docstrings, "markdown": markdown}
 
-
 @app.get("/.well-known/mcp/manifest.json")
 async def serve_manifest():
     return FileResponse("manifest.json", media_type="application/json")
-
 
 if __name__ == "__main__":
     import uvicorn
