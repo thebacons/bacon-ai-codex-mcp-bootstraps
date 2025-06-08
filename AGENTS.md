@@ -12,21 +12,30 @@ The **MCP DocGen agent** is designed to generate Python docstrings and markdown 
 ### Setup Instructions
 
 1. **Environment Variables**:
-   Ensure the following environment variables are set before running any scripts:
+   
 
-   * `GITHUB_REPO_NAME`: The name of the repository (e.g., `thebacons-demo-gdocs-mcp`).
-   * `GITHUB_ACCOUNT`: Your GitHub username (e.g., `thebacons`).
-   * `GITHUB_PAT_KEY`: Your GitHub Personal Access Token with sufficient permissions to push to the repository.
-   * `OPENAI_API_KEY`: The API key for OpenAI, required to interact with GPT models for generating docstrings.
+ ## Environment Setup for Codex
 
-   If any of these variables are missing, the script will fail with a clear error message. For local development, you can use a `.env` file to define them.
+Before running any scripts, ensure that the following environment variables are set correctly:
+
+1. **GITHUB_REPO_NAME**: The name of the repository (e.g., `thebacons-demo-gdocs-mcp`).
+2. **GITHUB_ACCOUNT**: Your GitHub username (e.g., `thebacons`).
+3. **GITHUB_PAT_KEY**: Your GitHub Personal Access Token with sufficient permissions to push to the repository.
+4. **OPENAI_API_KEY**: The API key for OpenAI, required to interact with GPT models for generating docstrings.
+
+Codex should look for these values in **Environment Variables** as well as **Secrets**. If any of these variables are missing, you will receive a clear error message.
+
+### Loading Environment Variables
+
+If you are storing the keys in **Secrets**,  but are blank or scrambled, you may need to move them to **Environment Variables** to ensure Codex can easily access them. You can also define them manually in the environment before running the scripts.
+If any of these variables are missing, the script will fail with a clear error message. For local development, you can use a `.env` file to define them.
 
 2. **Dependencies**:
 
    * **FastAPI** must be installed to run the server.
    * **OpenAI** Python SDK is required to interact with the OpenAI API for generating documentation.
    * **GitHub CLI** (`gh`) must be installed on the system to interact with GitHub and fetch repository variables.
-   * Install dependencies by running:
+   * This should have already been run in the environment's startup script, but if not,  Install dependencies by running:
 
      ```bash
      pip install -r requirements.txt
@@ -48,7 +57,7 @@ The **MCP DocGen agent** is designed to generate Python docstrings and markdown 
 You can set up the environment in one of the following ways:
 
 1. **Using a `.env` File**:
-   Ensure that the `.env` file exists in the root of the project and contains the following variables:
+   Ensure that the `.env` file exists in the root of the project and contains the following variables. this may cause issues is this is being pulled from GitHub as these need to be isntalled in the repositories secrets are rather than in the .env file. However Codex may want to create a temporary one locally as follows.:
 
    ```bash
    GITHUB_ACCOUNT=your_github_account
