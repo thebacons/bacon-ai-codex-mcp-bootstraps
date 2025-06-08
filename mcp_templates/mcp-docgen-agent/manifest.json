@@ -1,0 +1,16 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "DocGen Agent",
+  "name_for_model": "docgen_agent",
+  "description_for_human": "Generates docstrings and markdown docs for Python code.",
+  "description_for_model": "Parses Python code and returns docstrings and markdown documentation.",
+  "auth": {"type": "none"},
+  "api": {
+    "type": "openapi",
+    "url": "/openapi.json",
+    "has_user_authentication": false
+  },
+  "logo_url": "https://example.com/logo.png",
+  "contact_email": "support@example.com",
+  "legal_info_url": "https://example.com/legal"
+}
