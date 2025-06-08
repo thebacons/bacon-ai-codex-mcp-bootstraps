@@ -11,3 +11,4 @@ git remote set-url origin https://thebacons:$GITHUB_PAT_KEY@github.com/thebacons
 # Create a new branch and push
 git checkout -b test-branch-ai-perms
 git push origin test-branch-ai-perms
+
