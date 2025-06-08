@@ -103,5 +103,8 @@ git remote -v >> $LOG_FILE
 
 echo "Environment setup and Git push process completed successfully." >> $LOG_FILE
 
+# 8. Final cleanup: Reset environment to avoid leaving secrets exposed
+unset GITHUB_PAT_KEY
+
 # Return the log file path for easy sharing
-echo "Log file generated at $(pwd)/$LOG_FILE"
+echo "Log file generated at $(pwd)/$LOG_FILE" 
