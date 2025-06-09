@@ -22,6 +22,7 @@ Before running any scripts, ensure that the following environment variables are 
 2. **GITHUB_ACCOUNT**: Your GitHub username (e.g., `thebacons`).
 3. **GITHUB_PAT_KEY**: Your GitHub Personal Access Token with sufficient permissions to push to the repository.
 4. **OPENAI_API_KEY**: The API key for OpenAI, required to interact with GPT models for generating docstrings.
+5. **BLOG_INSPECTOR_TOKEN**: Authentication token for the Bacon Blog Inspector service.
 
 Codex should look for these values in **Environment Variables** as well as **Secrets**. If any of these variables are missing, you will receive a clear error message.
 

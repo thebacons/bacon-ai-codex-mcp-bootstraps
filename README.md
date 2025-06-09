@@ -83,8 +83,20 @@ If needed, revert to your original stable script after initial scaffolding:
 ## 📄 License
 
 MIT License – use freely, fork, modify, go wild 🍳
-EOF
 
+
+
+---
+
+## Bacon Blog Inspector
+
+The `blog_inspector` package provides a simple FastAPI service for analyzing blog posts.
+It requires `BLOG_INSPECTOR_TOKEN` and `OPENAI_API_KEY` in your `.env` file.
+
+Run locally with:
+
+```bash
+uvicorn blog_inspector.main:app --reload --port 8081
 ```
 
-
+Send authenticated POST requests to `/inspect` with your blog content to receive analysis and improvement suggestions.
