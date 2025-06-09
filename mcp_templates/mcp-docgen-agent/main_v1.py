@@ -46,14 +46,14 @@ async def generate_docs(payload: CodePayload):
             )
 
             try:
-                openai.api_key = api_key
-                completion = openai.ChatCompletion.create(
+                client = openai.OpenAI(api_key=api_key)
+                completion = client.chat.completions.create(
                     model="gpt-4",
                     messages=[{"role": "user", "content": doc_prompt}],
                     temperature=0.2,
                     max_tokens=150,
                 )
-                doc = completion.choices[0].message["content"].strip()
+                doc = completion.choices[0].message.content.strip()
             except Exception as exc:
                 raise HTTPException(status_code=500, detail=str(exc))
         else:
